@@ -2,6 +2,7 @@
   <li>
     <input type="checkbox" :checked="todo.isCompleted">
     <span>{{todo.title}}</span>
+    <button @click="$emit('delete-todo',todo)">x</button>
   </li>
 </template>
 

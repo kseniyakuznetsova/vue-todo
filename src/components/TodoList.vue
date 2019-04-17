@@ -1,15 +1,18 @@
 <template>
   <div>
+    <input @keydown.enter="insertTodo(newTodo)" type="text" v-model="newTodo">
+    <button @click="insertTodo(newTodo)">+</button>
     <ul id="todo-list">
-      <TodoItem v-for="todo in todos" :todo="todo" :key="todo.id"></TodoItem>
+      <TodoItem v-for="todo in todos" :todo="todo" :key="todo.id" v-on:delete-todo="deleteTodo"></TodoItem>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Model } from "vue-property-decorator";
-import Todo from "@/model/Todo";
+import $store from "@/store";
 import TodoItem from "@/components/TodoItem.vue";
+import Todo from "@/model/Todo";
 
 @Component({
   components: {
@@ -17,9 +20,22 @@ import TodoItem from "@/components/TodoItem.vue";
   }
 })
 export default class TodoList extends Vue {
-  todos = [
-    { id: 1, title: "First task", isCompleted: true },
-    { id: 2, title: "Second task", isCompleted: false }
-  ];
+  newTodo: string = "";
+  todos: Todo[] = [];
+
+  created() {
+    this.todos = $store.state.todos;
+  }
+
+  insertTodo(text: string) {
+    this.todos.push({
+      id: this.todos.length,
+      title: text,
+      isCompleted: false
+    });
+  }
+  deleteTodo(todo: Todo) {
+    this.todos.splice(this.todos.indexOf(todo), 1);
+  }
 }
 </script>
